@@ -1,6 +1,6 @@
 using System;
 
-namespace Frontend.Data
+namespace WebUI.Data
 {
     public class WeatherForecast
     {

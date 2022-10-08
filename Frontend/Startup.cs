@@ -8,11 +8,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Frontend.Data;
+using WebUI.Data;
 using Microsoft.AspNetCore.ResponseCompression;
 using Blazored.Modal;
 
-namespace Frontend
+namespace WebUI
 {
     public class Startup
     {

@@ -1,6 +1,6 @@
 using System;
 
-namespace Frontend.Models
+namespace WebUI.Models
 {
     public class NotificationDto
     {

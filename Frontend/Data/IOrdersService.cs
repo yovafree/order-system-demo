@@ -1,8 +1,8 @@
 using System;
 using System.Threading.Tasks;
-using Frontend.Models;
+using WebUI.Models;
 
-namespace Frontend.Data
+namespace WebUI.Data
 {
     public interface IOrdersService
     {

@@ -1,6 +1,7 @@
 @page "/"
 @inject HttpClient Http
 @inject IHttpClientFactory ClientFactory
+@using Frontend.Shared
 @using Microsoft.AspNetCore.SignalR.Client
 @using Microsoft.Extensions.Configuration
 @using System.Text.Json
@@ -9,25 +10,32 @@
 @implements IAsyncDisposable
 @inject IConfiguration Configuration
 
-<h1>Demo - Open Telemetry con .NET</h1>
+<h1>Demo - Order System 2.0</h1>
 <hr>
 <div class="row">
     <div class="col-md-6">
-        <h3>Confirmar Ordenes</h3>
-        <SurveyPrompt Title="Ingrese un número de orden aleatorio: " />
+        <div class="row">
+            <div class="col-md-12">
+                <h3>Confirmar Ordenes</h3>
+                <SurveyPrompt Title="Ingrese un número de orden aleatorio: " />
 
-        <label>No. de Orden</label>
-        <input type="text" @bind="@OrderID" @oninput="@((e) => { OrderID=(string)e.Value;})" />
+                <label>No. de Orden</label>
+                <input type="text" @bind="@OrderID" @oninput="@((e) => { OrderID=(string)e.Value;})" />
 
-        <button class="btn btn-primary" @onclick="SendConfirmation">Confirmar Orden</button>
+                <button class="btn btn-primary" @onclick="SendConfirmation">Confirmar Orden</button>
 
-        @if (!string.IsNullOrEmpty(MessageOrder))
-        {
-            <div class="alert alert-primary mt-4" role="alert">
-                <span class="oi oi-circle-check mr-2" aria-hidden="true"></span>
-                <strong>Respuesta: @MessageOrder</strong>
+                @if (!string.IsNullOrEmpty(MessageOrder))
+                {
+                    <div class="alert alert-primary mt-4" role="alert">
+                        <span class="oi oi-circle-check mr-2" aria-hidden="true"></span>
+                        <strong>Respuesta: @MessageOrder</strong>
+                    </div>
+                }
             </div>
-        }
+            <div class="col-md-12">
+
+            </div>
+        </div>
     </div>
     <div class="col-md-6">
         <h3>Notificaciones (SignalR)</h3>
