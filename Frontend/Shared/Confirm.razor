@@ -43,13 +43,13 @@
 
     [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
 
-    [Parameter] public int OrderID { get; set; }
+    [Parameter] public string OrderUuid { get; set; }
 
     private OrderDto Order = null;
 
     protected override async Task OnInitializedAsync()
     {
-        Order = await OrdersService.GetOrderAsync(OrderID);
+        Order = await OrdersService.GetOrderAsync(OrderUuid);
     }
 
     void Close() => BlazoredModal.CloseAsync(ModalResult.Ok(true));

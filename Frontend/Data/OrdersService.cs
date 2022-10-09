@@ -15,10 +15,10 @@ namespace WebUI.Data
         {
             this.httpClient = httpClient;
         }
-        public async Task<OrderDto> GetOrderAsync(int OrderID)
+        public async Task<OrderDto> GetOrderAsync(string OrderUuid)
         {
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            var response = await httpClient.GetStringAsync($"Payments/order/{OrderID}");
+            var response = await httpClient.GetStringAsync($"Payments/order/{OrderUuid}");
 
             OrderDto order = JsonSerializer.Deserialize<OrderDto>(response);
 

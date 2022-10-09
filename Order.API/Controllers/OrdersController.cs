@@ -34,10 +34,10 @@ namespace Order.API.Controllers
         }
 
         [HttpGet("confirm/{id}")]
-        public async Task<string> ConfirmOrder(int id)
+        public async Task<string> ConfirmOrder(string id)
         {
             OrderDto item = new OrderDto(){
-                OrderID = id,
+                OrderUuid = id,
                 ClientName = GetRandomName(),
                 CreationDate = DateTime.Now,
                 Address = "City"
@@ -46,7 +46,7 @@ namespace Order.API.Controllers
             item.Details = GetRandomDetails();
             item.Total = item.Details.Sum(x => x.Subtotal);
 
-            _logger.LogInformation($"Orden #{item.OrderID}. Enviando mensaje a Histórico a RabbitMQ");
+            _logger.LogInformation($"Orden #{item.OrderUuid}. Enviando mensaje a Histórico a RabbitMQ");
 
             SendQueueHistory(item);
 

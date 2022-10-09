@@ -1,18 +1,17 @@
-using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Payment.API.Models
 {
-    public class OrderDetail
+    public partial class OrderDetail
     {
-        [Key]
-        public int OrderDetailID { get; set; }
-        public int Quantity {get; set;}
-        public string Product {get; set;}
-        public decimal Price {get;set;}
-        public decimal Subtotal {get;set;}
-        public int OrderID { get; set; }
+        public int OrderDetailId { get; set; }
+        public int Quantity { get; set; }
+        public string Product { get; set; }
+        public decimal Price { get; set; }
+        public decimal Subtotal { get; set; }
+        public int OrderId { get; set; }
 
-        public Order Order {get;set;}
+        public virtual Order Order { get; set; }
     }
 }

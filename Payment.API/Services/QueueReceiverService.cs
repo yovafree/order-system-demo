@@ -51,13 +51,13 @@ namespace Payment.API.Services
             {
                 var content = Encoding.UTF8.GetString(ea.Body.ToArray());
                 var order = JsonSerializer.Deserialize<OrderDto>(content);
-                _logger.LogInformation($"Orden #{order.OrderID}. Mensaje histórico recibido. ");
+                _logger.LogInformation($"Orden #{order.OrderUuid}. Mensaje histórico recibido. ");
 
-                string msj = $"Orden #{order.OrderID} en proceso de confirmación.";
+                string msj = $"Orden #{order.OrderUuid} en proceso de confirmación.";
                 NotificationDto notification = new NotificationDto();
                 notification.Type = "Initial";
                 notification.Message = msj;
-                notification.OrderID = order.OrderID;
+                notification.OrderUuid = order.OrderUuid;
                 notification.Date = DateTime.Now;
 
                 SendMessageQueue(notification);

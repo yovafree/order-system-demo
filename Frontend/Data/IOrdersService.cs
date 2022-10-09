@@ -6,6 +6,6 @@ namespace WebUI.Data
 {
     public interface IOrdersService
     {
-        Task<OrderDto> GetOrderAsync(int OrderID);
+        Task<OrderDto> GetOrderAsync(string OrderUuid);
     }
 }

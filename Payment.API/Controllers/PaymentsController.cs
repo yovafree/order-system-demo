@@ -37,62 +37,61 @@ namespace Payment.API.Controllers
         {
             using (var activity = Activity.StartActivity("Se recibe confirmación de pago", ActivityKind.Server))
             {
-                 _logger.LogInformation("Orden en confirmación #" + order.OrderID);
+                 _logger.LogInformation("Orden en confirmación #" + order.OrderUuid);
 
-                if (OrderExist(order.OrderID)){
-                    _logger.LogInformation($"Orden #{order.OrderID}, ya fue confirmada.");
-                    return $"Orden #{order.OrderID}, ya fue confirmada.";
+                if (OrderExist(order.OrderUuid)){
+                    _logger.LogInformation($"Orden #{order.OrderUuid}, ya fue confirmada.");
+                    return $"Orden #{order.OrderUuid}, ya fue confirmada.";
                 }
 
                 Order item = new Order();
-                item.OrderID = order.OrderID;
                 item.ClientName = order.ClientName;
                 item.Address = order.Address;
                 item.Total = order.Total;
                 item.CreationDate = order.CreationDate;
-                item.UuidTransaction = Guid.NewGuid().ToString();
+                item.UuidTransaction = order.OrderUuid;
                 item.PaymentGateway = "VISA";
-                item.OrderDetail = order.Details.Select(x => new OrderDetail(){
+                item.OrderDetails = order.Details.Select(x => new OrderDetail(){
                     Price = x.Price,
                     Quantity = x.Quantity,
                     Product = x.Product,
                     Subtotal = x.Subtotal,
-                    OrderID = item.OrderID
+                    OrderId = item.OrderId
                 }).ToList();
 
                 _context.Orders.Add(item);
                 _context.SaveChanges();
-                string msj = $"Orden #{order.OrderID}. Se confirma pago por medio de pasarela.";
+                string msj = $"Orden #{order.OrderUuid}. Se confirma pago por medio de pasarela.";
 
                 NotificationDto notification = new NotificationDto();
                 notification.Type = "Finish";
                 notification.Message = msj;
-                notification.OrderID = item.OrderID;
+                notification.OrderUuid = item.UuidTransaction;
                 notification.Date = DateTime.Now;
 
                 SendQueueHistory(notification);
                 _logger.LogInformation(msj);
             }
-            return $"Orden #{order.OrderID} procesada.";
+            return $"Orden #{order.OrderUuid} procesada.";
         }
 
 
         [HttpGet("order/{id}")]
-        public OrderDto2 GetOrder(int id)
+        public OrderDto2 GetOrder(string id)
         {
             using (var activity = Activity.StartActivity("Solicitan Información de Orden", ActivityKind.Producer))
             {
-                var item = _context.Orders.Find(id);
+                var item = _context.Orders.Where(x => x.UuidTransaction == id).FirstOrDefault();
 
                 if (item == null){
                     _logger.LogInformation($"Orden #{id} no existe.");
                     return null;
                 }
 
-                var details = _context.OrderDetail.Where(x => x.OrderID == item.OrderID).ToList();
+                var details = _context.OrderDetails.Where(x => x.OrderId == item.OrderId).ToList();
 
                 OrderDto2 reg = new OrderDto2(){
-                    OrderID = item.OrderID,
+                    OrderID = item.OrderId,
                     ClientName = item.ClientName,
                     CreationDate = item.CreationDate,
                     Address = item.Address,
@@ -112,9 +111,9 @@ namespace Payment.API.Controllers
             
         }
 
-        private bool OrderExist(int id){
+        private bool OrderExist(string uuid){
 
-            var item = _context.Orders.Find(id);
+            var item = _context.Orders.Where(x => x.UuidTransaction == uuid).FirstOrDefault();
 
             return item != null ? true : false;
         }

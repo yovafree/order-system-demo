@@ -7,24 +7,31 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Payment.API.Models;
 
+#nullable disable
+
 namespace Payment.API.Migrations
 {
     [DbContext(typeof(DemoContext))]
-    [Migration("20210910063334_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20221009174918_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.9")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "6.0.9")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
             modelBuilder.Entity("Payment.API.Models.Order", b =>
                 {
-                    b.Property<int>("OrderID")
-                        .HasColumnType("int");
+                    b.Property<int>("OrderId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("OrderID");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"), 1L, 1);
 
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
@@ -44,20 +51,23 @@ namespace Payment.API.Migrations
                     b.Property<string>("UuidTransaction")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("OrderID");
+                    b.HasKey("OrderId");
 
                     b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("Payment.API.Models.OrderDetail", b =>
                 {
-                    b.Property<int>("OrderDetailID")
+                    b.Property<int>("OrderDetailId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnName("OrderDetailID");
 
-                    b.Property<int>("OrderID")
-                        .HasColumnType("int");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderDetailId"), 1L, 1);
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int")
+                        .HasColumnName("OrderID");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
@@ -71,25 +81,27 @@ namespace Payment.API.Migrations
                     b.Property<decimal>("Subtotal")
                         .HasColumnType("decimal(18,2)");
 
-                    b.HasKey("OrderDetailID");
+                    b.HasKey("OrderDetailId");
 
-                    b.HasIndex("OrderID");
+                    b.HasIndex(new[] { "OrderId" }, "IX_OrderDetail_OrderID");
 
-                    b.ToTable("OrderDetail");
+                    b.ToTable("OrderDetail", (string)null);
                 });
 
             modelBuilder.Entity("Payment.API.Models.OrderDetail", b =>
                 {
-                    b.HasOne("Payment.API.Models.Order", null)
-                        .WithMany("OrderDetail")
-                        .HasForeignKey("OrderID")
+                    b.HasOne("Payment.API.Models.Order", "Order")
+                        .WithMany("OrderDetails")
+                        .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("Payment.API.Models.Order", b =>
                 {
-                    b.Navigation("OrderDetail");
+                    b.Navigation("OrderDetails");
                 });
 #pragma warning restore 612, 618
         }

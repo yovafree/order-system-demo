@@ -5,7 +5,7 @@ namespace Payment.API.Models.DTOs
 {
     public class OrderDto
     {
-        public int OrderID { get; set; }
+        public string OrderUuid { get; set; }
         public DateTime CreationDate {get; set;}
         public string ClientName {get;set;}
         public string Address {get;set;}
